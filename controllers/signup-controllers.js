@@ -1,46 +1,57 @@
-const sequelize=require('../util/database')
+const sequelize = require("../util/database");
 
-const signup=require('../models/signup')
+const bcrypt = require("bcrypt");
 
-exports.getSignupDetails=(req,res,next)=>{
-   signup.findAll().then(response=>{
-    res.json(response)
-   }).catch(err=>console.log(err))
-}
+const signup = require("../models/signup");
 
-exports.postSignupDetails=async(req,res,next)=>{
-
-  
-    const email=req.body.email
-    const password=req.body.password
-    const data=await signup.create({
-        
-        email:email,
-        password:password
+exports.getSignupDetails = (req, res, next) => {
+  signup
+    .findAll()
+    .then((response) => {
+      res.json(response);
     })
-    res.status(201).json({getDetails:data})
-}
+    .catch((err) => console.log(err));
+};
 
-exports.postLoginDetails=async(req,res,next)=>{
-    const email=req.body.email
-    try{
-        const user=await signup.findAll({where:{email
-        }})
+exports.postSignupDetails = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  bcrypt.hash(password, 10, async (err, hash) => {
+    const data = await signup.create({
+      email: email,
+      password: password,
+      password: hash,
+    });
+    res.status(201).json({ getDetails: data });
+  });
+};
 
-        console.log(user[0].password)
-    
-        if(user.length>0){
-            if(user[0].password===req.body.password)
-            {
-                res.status(200).json({success:true,message:"Login successful"})
-            }
-            else{
-                res.json({success:false,error:"Invalid Credentials"})
-            }
+exports.postLoginDetails = async (req, res, next) => {
+  const email = req.body.email;
+  try {
+    const user = await signup.findAll({ where: { email } });
+
+    console.log(user[0].password);
+
+    if (user.length > 0) {
+      bcrypt.compare(req.body.password, user[0].password, (err, response) => {
+        if (err) {
+          throw new Error("Something Went Wrong")
+        } 
+        if(response===true){
+            res.status(200).json({ success: true, message: "Login successful" });
         }
+        
+        else {
+          res
+            .status(400)
+            .json({ success: false, error: "Invalid Credentials" });
+        }
+      });
+    } else {
+      res.status(400).json({ success: false, error: "no data" });
     }
-    
-    catch(error){
-        console.log(error)
-    }
-}
+  } catch (error) {
+    console.log(error);
+  }
+};
