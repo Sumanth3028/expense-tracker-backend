@@ -7,4 +7,6 @@ router.get('/getDetails',signupController.getSignupDetails)
 
 router.post('/postDetails',signupController.postSignupDetails)
 
+router.post('/login',signupController.postLoginDetails)
+
 module.exports=router
