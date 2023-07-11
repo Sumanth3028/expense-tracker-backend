@@ -2,13 +2,13 @@ const users=require('../models/expense')
 
 
 exports.getExpenseDetails=(req,res,next)=>{
-    users.findAll().then(expense=>{res.json({allUser:expense})}).catch(err=>console.log(err))
+    users.findAll().then(expense=>{res.json({expense})}).catch(err=>console.log(err))
 }
 
 exports.postExpenseDetails=async(req,res,next)=>{
-    const amount= req.body.res1;
-    const description=req.body.res2;
-    const category=req.body.res3;
+    const amount= req.body.amount;
+    const description=req.body.description;
+    const category=req.body.select;
    
 
 
@@ -21,7 +21,7 @@ exports.postExpenseDetails=async(req,res,next)=>{
         Categories:category
     })
 
-    res.status(201).json({getData:data})
+    res.status(201).json({data})
 }
 
 exports.deleteMemberDetails=(req,res,next)=>{
