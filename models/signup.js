@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../util/database");
 
 const signup = sequelize.define(
-  "signup-details",
+  "signups",
   {
     
     email: {

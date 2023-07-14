@@ -4,12 +4,14 @@ const router=express.Router()
 
 const expenseController=require('../controllers/expenses-controllers')
 
-router.get('/getdetails',expenseController.getExpenseDetails)
+const userAuthentication=require('../middleware/authenticate')
+
+router.get('/getdetails',userAuthentication.authenticate,expenseController.getExpenseDetails)
 
 
-router.post('/postdetails',expenseController.postExpenseDetails)
+router.post('/postdetails',userAuthentication.authenticate,expenseController.postExpenseDetails)
 
-router.post(`/deleteDetails/:id`,expenseController.deleteMemberDetails)
+router.delete(`/deleteDetails/:id`,userAuthentication.authenticate,expenseController.deleteMemberDetails)
 
 router.get(`/editdetails/:id`,expenseController.getEditDetails)
 
