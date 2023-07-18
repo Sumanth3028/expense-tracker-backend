@@ -13,6 +13,7 @@ const signup = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    ispremuser:Sequelize.BOOLEAN,
   },
   {
     timestamps: false,
