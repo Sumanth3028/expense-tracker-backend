@@ -6,6 +6,8 @@ const signup=require('../models/signup')
 
 const jwt=require("jsonwebtoken")
 
+
+
 exports.getSignupDetails = (req, res, next) => {
   signup
     .findAll()
@@ -14,6 +16,17 @@ exports.getSignupDetails = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+
+
+
+
+ const generateAccessToken=(id,isPremiumUser,email)=>{
+    return jwt.sign({signupId:id,isPremiumUser:isPremiumUser,email:email} ,'8247533361a')
+  }
+
+  
+
 
 exports.postSignupDetails = async (req, res, next) => {
   const email = req.body.email;
@@ -28,10 +41,9 @@ exports.postSignupDetails = async (req, res, next) => {
   });
 };
 
-function generateAccessToken(id){
-    return jwt.sign({signupId:id},'8247533361a')
-}
+ 
 
+ 
 exports.postLoginDetails = async (req, res, next) => {
   const email = req.body.email;
   try {
@@ -46,7 +58,8 @@ exports.postLoginDetails = async (req, res, next) => {
           throw new Error("Something Went Wrong")
         } 
         if(response===true){
-            res.status(200).json({ success: true, message: "Login successful",token:generateAccessToken(user[0].id) , email:user[0].email});
+          // console.log("checking premium",user[0].ispremuser)
+            res.status(200).json({ success: true, message: "Login successful",token:generateAccessToken(user[0].id ,user[0].ispremuser, user[0].email) , email:user[0].email});
         }
         
         else {
@@ -62,3 +75,5 @@ exports.postLoginDetails = async (req, res, next) => {
     console.log(error);
   }
 };
+
+
