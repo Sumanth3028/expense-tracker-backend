@@ -20,6 +20,7 @@ const order=require('./models/orders')
 const expenseRoutes=require('./routes/expenses-routes')
 const signupRoutes=require('./routes/signup-routes')
 const purchaseroutes=require('./routes/purchase-routes')
+const premiumRoutes=require('./routes/premium-routes')
 const { or } = require('sequelize')
 
 app.use(cors())
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use('/expense',expenseRoutes)
 app.use(signupRoutes)
 app.use(purchaseroutes)
+app.use(premiumRoutes)
 
 user.hasMany(expense)
 expense.belongsTo(user)

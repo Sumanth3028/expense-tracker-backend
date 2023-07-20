@@ -1,6 +1,13 @@
 const Razorpay = require("razorpay");
 require("dotenv").config();
 const Order = require("../models/orders");
+const signup=require('../models/signup')
+
+const jwt=require("jsonwebtoken")
+
+
+
+
 
 exports.purchasePremium = async (req, res) => {
   console.log("process is--->", process.env.RAZORPAY_KEY_ID);
@@ -28,8 +35,15 @@ exports.purchasePremium = async (req, res) => {
   }
 };
 
+const generateAccessToken=(id,isPremiumUser)=>{
+  return jwt.sign({signupId:id,isPremiumUser:isPremiumUser} ,'8247533361a')
+}
+
 exports.updateTransactions = async (req, res, next) => {
   try {
+   
+    const signupId=req.user.id
+    
     const payment_id = req.body.payment_id;
     const order_id = req.body.order_id;
     console.log(order_id);
@@ -38,9 +52,27 @@ exports.updateTransactions = async (req, res, next) => {
     const promise2= req.user.update({ ispremuser: true });
     Promise.all([promise1,promise2]).then(()=>{ return res
       .status(202)
-      .json({ success: true, message: "transaction successful" });}).catch((err)=>{console.log(err)})
+      .json({ success: true, message: "transaction successful",token:generateAccessToken(signupId,true,email) });}).catch((err)=>{console.log(err)})
    
   } catch (err) {
     console.log(err);
   }
 };
+
+
+// exports.getPremiumStatus=(req,res,next)=>{
+//   const userId=req.user.signupId
+//   console.log(userId)
+
+//   signup.findByPk(userId).then(user=>{
+//     if(!user){
+//       res.status(403).json({success:false,message:"wrong"})
+//     }
+//     const isPremiumUser = user.ispremuser;
+//       res.json({ isPremiumUser });
+//   }).catch(err=>{
+//     console.log(err)
+//   })
+
+
+// }

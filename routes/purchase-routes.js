@@ -10,4 +10,6 @@ router.get("/purchaseMembership",userAuthentication.authenticate, purchaseContro
 
 router.post("/updateMembership",userAuthentication.authenticate, purchaseControllers.updateTransactions)
 
+// router.get("/getPremuimStatus",userAuthentication.authenticate, purchaseControllers.getPremiumStatus)
+
 module.exports=router
