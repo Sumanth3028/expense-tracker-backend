@@ -1,4 +1,6 @@
 const users = require("../models/expense");
+const SignUp=require('../models/signup')
+const sequelize=require("../util/database")
 const jwt = require("jsonwebtoken");
 exports.getExpenseDetails = (req, res, next) => {
   // console.log("userId",userId)
@@ -11,6 +13,8 @@ exports.getExpenseDetails = (req, res, next) => {
 };
 
 exports.postExpenseDetails = async (req, res) => {
+  try{
+  const t= await sequelize.transaction()
   const amount = req.body.amount;
   const description = req.body.description;
   const category = req.body.select;
@@ -21,21 +25,52 @@ exports.postExpenseDetails = async (req, res) => {
     Description: description,
     Categories: category,
     signupId: userId,
-  });
-
+  },{transaction:t});
+  const Total_Expenses=Number(req.user.Total_Expenses)+Number(data.Amount)
+  
+   await SignUp.update({
+    Total_Expenses:Total_Expenses
+   },{
+    where:{id:req.user.id},
+    transaction:t
+   })
+   await t.commit()
   res.status(201).json({ data });
+  }
+  catch(err){
+   await t.rollback ()
+    console.log(err)
+  }
 };
 
-exports.deleteMemberDetails = (req, res, next) => {
+exports.deleteMemberDetails = async(req, res, next) => {
+  try{
   const memberId = req.params.id;
-  console.log("in delete exports", req.user);
-  console.log(memberId);
-  users
+  // console.log("in delete exports", req.user.Total_Expenses);
+
+  const expenses=await users.findOne({where:{id:memberId,signupId:req.user.id}})
+  console.log("amount",expenses.Amount)
+
+  const Total_Expenses=Number(req.user.Total_Expenses)-Number(expenses.Amount)
+  console.log(Total_Expenses)
+ 
+  let mem=await users
     .destroy({ where: { id: memberId, signupId: req.user.id } })
-    .then((mem) => {
-      return mem;
-    })
-    .catch((err) => console.log(err));
+  
+    
+
+    await  SignUp.update({
+      Total_Expenses:Total_Expenses
+     },{
+      where:{id:req.user.id}
+     })
+   res.status(200).json({success:true,message:"Deleted Successfully"})  
+   
+  }
+  catch(err){
+    console.log(err)
+  } 
+    
 };
 
 exports.getEditDetails = (req, res, next) => {
