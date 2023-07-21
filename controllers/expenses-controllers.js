@@ -53,23 +53,31 @@ exports.getEditDetails = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.editDetails = (req, res, next) => {
-  const id = req.body.id;
-  console.log(id);
-  const updatedAmount = req.body.res1;
-  const updatedDescription = req.body.res2;
-  const updatedCategory = req.body.res3;
+exports.editDetails = async (req, res, next) => {
 
-  users
-    .findByPk(id)
-    .then((mem) => {
-      mem.Amount = updatedAmount;
-      mem.Description = updatedDescription;
-      mem.Categories = updatedCategory;
-      mem.save();
+  try{
+  const id = req.user.id;
+  console.log(id);
+  const updatedAmount = req.body.amount;
+  console.log(updatedAmount);
+  const updatedDescription = req.body.description;
+  const updatedCategory = req.body.select;
+
+  await users.findAll({ where: { signupId: id } });
+
+  let res=await req.user.update({
+      Amount: updatedAmount,
+      Description: updatedDescription,
+      Categories: updatedCategory,
     })
-    .then((res) => {
+
+    // mem.save();
+
+    
       console.log(res);
-    })
-    .catch((err) => console.log(err));
+  }
+  catch(err){
+    console.log(err)
+  } 
+    
 };

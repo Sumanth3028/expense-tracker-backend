@@ -15,5 +15,7 @@ router.delete(`/deleteDetails/:id`,userAuthentication.authenticate,expenseContro
 
 router.get(`/editdetails/:id`,expenseController.getEditDetails)
 
-router.post('/editdetails',expenseController.editDetails)
+router.put('/editdetails',userAuthentication.authenticate,expenseController.editDetails)
+
+
 module.exports=router  
