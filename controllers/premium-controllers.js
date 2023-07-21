@@ -7,23 +7,7 @@ const sequelize = require("../util/database");
 exports.getPremiumLeaderBoard = async (req, res, next) => {
   try {
     const users = await Users.findAll({
-      attributes: [
-        "email",
-        "id",
-        [
-            sequelize.fn("coalesce", sequelize.fn("sum", sequelize.col("expenses.Amount")),0),
-          "total_expenses",
-        ],
-      ],
-      include: [
-        {
-          model: Expenses,
-          attributes: [],
-          
-        },
-      ],
-      group: ["signups.id"],
-      order:[[sequelize.col("total_expenses"),"DESC"]]
+      order:[[sequelize.col("Total_Expenses"),"DESC"]]
     });
     // const userAggregatedExpenses = await Expenses.findAll({
     //   attributes: [

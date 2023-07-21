@@ -14,6 +14,10 @@ const signup = sequelize.define(
       allowNull: false,
     },
     ispremuser:Sequelize.BOOLEAN,
+    Total_Expenses:{
+      type:Sequelize.INTEGER,
+      defaultValue:0
+    }
   },
   {
     timestamps: false,
