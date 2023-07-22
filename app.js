@@ -1,5 +1,7 @@
 const express=require('express')
 
+
+
 const path=require('path')
 
 const bodyParser=require('body-parser')
@@ -21,6 +23,7 @@ const expenseRoutes=require('./routes/expenses-routes')
 const signupRoutes=require('./routes/signup-routes')
 const purchaseroutes=require('./routes/purchase-routes')
 const premiumRoutes=require('./routes/premium-routes')
+const forgotPasswordRoutes=require('./routes/forgot-password-routes')
 const { or } = require('sequelize')
 
 app.use(cors())
@@ -32,6 +35,7 @@ app.use('/expense',expenseRoutes)
 app.use(signupRoutes)
 app.use(purchaseroutes)
 app.use(premiumRoutes)
+app.use('/password',forgotPasswordRoutes)
 
 user.hasMany(expense)
 expense.belongsTo(user)
