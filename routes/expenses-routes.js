@@ -17,5 +17,6 @@ router.get(`/editdetails/:id`,expenseController.getEditDetails)
 
 router.put('/editdetails',userAuthentication.authenticate,expenseController.editDetails)
 
+router.get('/downloadExpenses',userAuthentication.authenticate,expenseController.downloadExpenses)
 
 module.exports=router  
