@@ -35,14 +35,17 @@ exports.purchasePremium = async (req, res) => {
   }
 };
 
-const generateAccessToken=(id,isPremiumUser)=>{
-  return jwt.sign({signupId:id,isPremiumUser:isPremiumUser} ,'8247533361a')
+const generateAccessToken=(id,isPremiumUser,email)=>{
+  return jwt.sign({signupId:id,isPremiumUser:isPremiumUser,email:email} ,'8247533361a')
 }
+
 
 exports.updateTransactions = async (req, res, next) => {
   try {
    
     const signupId=req.user.id
+    const email=req.body.email
+    console.log(email)
     
     const payment_id = req.body.payment_id;
     const order_id = req.body.order_id;
