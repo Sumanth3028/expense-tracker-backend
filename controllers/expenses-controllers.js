@@ -4,14 +4,44 @@ const sequelize = require("../util/database");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
 require("dotenv").config();
-exports.getExpenseDetails = (req, res, next) => {
-  // console.log("userId",userId)
-  users
-    .findAll({ where: { signupId: req.user.id } })
-    .then((expense) => {
-      res.json({ expense });
-    })
-    .catch((err) => console.log(err));
+
+
+exports.getExpenseDetails = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    let totalExpenses;
+    const ITEMS_PER_PAGE = 5;
+
+    let expense = await users.findAll({
+      where: { signupId: req.user.id },
+      offset: (page - 1) * ITEMS_PER_PAGE,
+      limit: ITEMS_PER_PAGE,
+    });
+
+    
+    let total = await users.count({ where: { signupId: req.user.id } });
+
+   
+
+    const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+    res.json({
+      expense: expense,
+      currentPage: page,
+      totalPages: totalPages,
+      totalItems: total,
+      hasNextPage: ITEMS_PER_PAGE * page < total,
+      nextPage: page + 1,
+      hasPreviousPage: page > 1,
+      previousPage: page - 1,
+      
+    });
+
+    // let product= await users.findAll({ where: { signupId: req.user.id } },)
+    // console.log("Product",product)
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.postExpenseDetails = async (req, res) => {
@@ -126,10 +156,10 @@ exports.editDetails = async (req, res, next) => {
 function uploadToS3(data, fileName) {
   try {
     const BUCKET_NAME = "expensetracker1243";
-    const IAM_USER_KEY = process.env.IAM_USER_KEY
-    const IAM_USER_SECRET = process.env.IAM_USER_SECRET
+    const IAM_USER_KEY = process.env.IAM_USER_KEY;
+    const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
 
-    console.log(IAM_USER_SECRET)
+    console.log(IAM_USER_SECRET);
 
     let s3Bucket = new AWS.S3({
       accessKeyId: IAM_USER_KEY,
