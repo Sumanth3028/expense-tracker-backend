@@ -9,6 +9,7 @@ const userAuthentication=require('../middleware/authenticate')
 router.get('/getdetails',userAuthentication.authenticate,expenseController.getExpenseDetails)
 
 
+
 router.post('/postdetails',userAuthentication.authenticate,expenseController.postExpenseDetails)
 
 router.delete(`/deleteDetails/:id`,userAuthentication.authenticate,expenseController.deleteMemberDetails)
