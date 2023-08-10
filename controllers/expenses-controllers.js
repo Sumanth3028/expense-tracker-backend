@@ -10,7 +10,7 @@ exports.getExpenseDetails = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     let totalExpenses;
-    const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE =parseInt(req.query.limit)||5 ;
 
     let expense = await users.findAll({
       where: { signupId: req.user.id },
