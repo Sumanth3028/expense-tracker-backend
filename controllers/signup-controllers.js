@@ -13,6 +13,7 @@ exports.getSignupDetails = (req, res, next) => {
     .findAll()
     .then((response) => {
       res.json(response);
+      console.log(response)
     })
     .catch((err) => console.log(err));
 };
